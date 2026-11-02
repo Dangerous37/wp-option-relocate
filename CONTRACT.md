@@ -1,0 +1,2 @@
+# Relocation contract
+Run under WP-CLI on a trusted disposable or maintenance-mode install. A plan covers one named option and two different HTTPS origins. Replace a string value only if it starts with the exact origin and a URL boundary. Preserve array keys and non-string scalars; reject objects. Apply requires current value to equal the planned before image. Undo requires it to equal the after image. Run with other writers paused. Plan files contain full option values and belong outside the web root.

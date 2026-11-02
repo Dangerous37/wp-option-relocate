@@ -1,0 +1,27 @@
+name: WordPress integration
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: localfixture
+          MYSQL_DATABASE: wp
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=3s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: wp-cli
+          extensions: mysqli
+      - run: |
+          wp core download --path="$RUNNER_TEMP/wp"
+          wp config create --path="$RUNNER_TEMP/wp" --dbname=wp --dbuser=root --dbpass=localfixture --dbhost=127.0.0.1
+          wp core install --path="$RUNNER_TEMP/wp" --url=http://localhost --title=Fixture --admin_user=fixture --admin_password=localfixture --admin_email=demo@example.test --skip-email
+          RELOCATE_LIB="$PWD/library.php" wp --path="$RUNNER_TEMP/wp" --user=fixture eval-file "$PWD/acceptance.php"
